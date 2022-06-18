@@ -108,7 +108,22 @@
 
 ## 📝 미션 저장소 및 진행 요구사항
 
-- 미션은 [https://github.com/woowacourse/javascript-subway-map-precours](https://github.com/woowacourse/javascript-subway-map-precourse) 저장소를 fork/clone해 시작한다.
+- 미션은 [https://github.com/woowacourse/javascript-subway-map-precourse](https://github.com/woowacourse/javascript-subway-map-precourse) 저장소를 fork/clone해 시작한다.
 - **기능을 구현하기 전에 javascript-subway-precourse/docs/README.md 파일에 구현할 기능 목록**을 정리해 추가한다.
 - **git의 commit 단위는 앞 단계에서 README.md 파일에 정리한 기능 목록 단위로 추가**한다.
 - [프리코스 과제 제출](https://github.com/woowacourse/woowacourse-docs/tree/master/precourse) 문서 절차를 따라 미션을 제출한다.
+
+
+### 구현할 기능 목록
+
+- 버튼 클릭 시 웹 페이지 전환 구현
+- 지하철 역 등록 
+- 지하철 역 삭제
+- 지하철 역 목록 조회
+- 지하철 노선 등록
+- 지하철 노선 삭제
+- 지하철 노선 목록 조회
+- 지하철 노선에 구간 추가 (역 추가)
+- 지하철 노선 구간 삭제 기능 (규칙 엄격하게 지킬 것)
+- 지하철 노선의 상행 종점부터 하행 종점까지 연결된 순서대로 역 목록 조회 
+
