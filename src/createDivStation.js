@@ -12,3 +12,10 @@ export function createDivStation() {
   docBody.appendChild(stationList);
   return false;
 } 
+
+export function rebuildStationList() {
+  const docBody = document.body;
+  docBody.removeChild(docBody.lastChild);
+  const stationList = createStationList();
+  docBody.appendChild(stationList);
+}

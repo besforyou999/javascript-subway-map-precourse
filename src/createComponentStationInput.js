@@ -1,3 +1,4 @@
+import { rebuildStationList } from "./createDivStation.js";
 const invalidInputAlertMessage1 = "2글자 이상, 중복되지 않는 역 이름을 입력해주세요";
 const invalidInputAlertMessage2 = '중복되지 않는 역 이름을 입력해주세요';
 
@@ -46,36 +47,35 @@ function createStationAddBtn() {
 }
 
 function stationAddBtnClickListener() {
-  const stations = JSON.parse(window.localStorage.getItem('stations'));
+  const stationsList = JSON.parse(window.localStorage.getItem('stations'));
   const stationNameInput = document.getElementById('inputName');
   const inputString = stationNameInput.value;
-  if (checkIfInputIsValid(inputString, stations)) {
-    addStationToLocalStorage(inputString, stations);
+  if (checkIfInputIsValid(inputString, stationsList)) {
+    addStationToLocalStorage(inputString, stationsList);
   }
   document.getElementById('inputName').value = '';
+  rebuildStationList();
 }
 
-function addStationToLocalStorage(inputString, stations) {
-  if (stations == null ){
-    const newArr = new Array();
-    newArr.push(inputString);
-    const newArrString = JSON.stringify(newArr);
-    window.localStorage.setItem('stations', newArrString);
-  } else {
-    const stationArrString = window.localStorage.getItem('stations');
-    const stationArr = JSON.parse(stationArrString);
-    stationArr.push(inputString);
-    window.localStorage.setItem('stations', JSON.stringify(stationArr));
-  }
+function addStationToLocalStorage(inputString, stationsList) {
+  stationsList.push(inputString);
+  window.localStorage.setItem('stations', JSON.stringify(stationsList));
 }
 
-function checkIfInputIsValid(inputString , stations) {
+function checkIfInputIsValid(inputString , stationsList) {
   if (inputString == '' || inputString.length < 2 || inputString == null) { 
     alert(invalidInputAlertMessage1);
     return false;
-  } else if (stations != null && stations.includes(inputString)) {
+  } else if (stationsList != null && checkIfInputOverlap(inputString, stationsList)) {
     alert(invalidInputAlertMessage2);
     return false;
   }
   return true;
+}
+
+function checkIfInputOverlap(inputString, stationsList) {
+  for (let i = 0 ; i < stationsList.length ; i++) {
+    if (inputString == stationsList[i]) return true;
+  }
+  return false;
 }
