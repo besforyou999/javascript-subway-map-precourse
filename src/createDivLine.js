@@ -1,6 +1,8 @@
 export function createDivLine() {
   const top = document.body;
-  top.removeChild(top.lastChild);
+  while(top.childElementCount > 1) {
+    top.removeChild(top.lastChild);
+  }
 
   // 1. <div> element 만들기
   const newDiv = document.createElement('div');
