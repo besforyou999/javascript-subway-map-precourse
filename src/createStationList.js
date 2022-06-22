@@ -80,6 +80,8 @@ function deleteStationFromArray(event) {
       break;
     }
   }
+  let confirmResult = confirm("정말로 삭제하시겠습니까?");
+  if (!confirmResult) return;
   stationArr.splice(idx, 1);
   window.localStorage.setItem('stations', JSON.stringify(stationArr));
   rebuildStationList();

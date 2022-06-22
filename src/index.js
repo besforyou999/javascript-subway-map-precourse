@@ -9,6 +9,7 @@ window.onload = function() {
   getElements();
   addEventListeners();
   buildStationArrayAtLocalStorage();
+  buildLineArrayAtLocalStorage();
 }
 
 function getElements() {
@@ -30,5 +31,13 @@ function buildStationArrayAtLocalStorage() {
   if (!stationArr) {
     const newStationArr = new Array();
     window.localStorage.setItem('stations', JSON.stringify(newStationArr));
+  }
+}
+
+function buildLineArrayAtLocalStorage() {
+  const lineArray = window.localStorage.getItem('lines');
+  if (!lineArray) {
+    const newLineArray = new Array();
+    window.localStorage.setItem('lines', JSON.stringify(newLineArray));
   }
 }
