@@ -1,5 +1,3 @@
-import { createLineNode } from "./lineNode.js";
-
 export function createLineList() {
   const container = document.createElement('div');
   const lineListText = createLineListText();
@@ -17,7 +15,7 @@ function createLineListText() {
   return lineList;
 }
 
-function createLineListTable() {
+export function createLineListTable() {
   const lineListTable = document.createElement('table');
   lineListTable.id = 'lineListTable';
   lineListTable.style = "border: 1px solid";

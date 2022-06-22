@@ -1,3 +1,8 @@
+import {createLineNode} from "./lineNode.js";
+import { createLineList, createLineListTable } from "./createLineList.js";
+const dropdownId1 = `stationDropdown1`;
+const dropdownId2 = `stationDropdown2`;
+
 export function createLineInput() {
   const container = document.createElement('div');
   const lineNameText = createLineNameText();
@@ -61,8 +66,8 @@ function createUpperDirText() {
 
 function createDropdown1() {
   const select = document.createElement('select');
-  select.name = "stationDropdown1";
-  select.id = "stationDropdown1";
+  select.name = dropdownId1;
+  select.id = dropdownId1;
   const stationArr = JSON.parse(window.localStorage.getItem('stations'));
   for (const station of stationArr) {
     const option = document.createElement('option');
@@ -96,8 +101,8 @@ function createLowerDirText() {
 
 function createDropdown2() {
   const select = document.createElement('select');
-  select.name = "stationDropdown2";
-  select.id = "stationDropdown2";
+  select.name = dropdownId2;
+  select.id = dropdownId2;
   const stationArr = JSON.parse(window.localStorage.getItem('stations'));
   for (const station of stationArr) {
     const option = document.createElement('option');
@@ -113,5 +118,63 @@ function createAddLineBtn() {
   btn.id = "addLineBtn";
   const addBtnText = document.createTextNode('노선 추가');
   btn.appendChild(addBtnText);
+  btn.addEventListener('click', addLineBtnClickListener);
   return btn;
+}
+
+function addLineBtnClickListener() {
+  const inputText = document.getElementById('lineNameInput');
+  const inputString = inputText.value;
+  if(!checkIfInputLineNameIsValid(inputString)) return;
+  const values = checkIfSelectOptionsOverlap();
+  if (values == true) return;
+  addNewLineToLocalStorage(inputString, values[0], values[1]);
+  alert("노선 추가 완료");
+  rebuildLineList();
+}
+
+function rebuildLineList() {
+  const docBody = document.body;
+  docBody.removeChild(docBody.lastChild);
+  const lineList = createLineListTable();
+  docBody.appendChild(lineList);
+}
+
+function addNewLineToLocalStorage(newLineName, upDirEnd, downDirEnd) {
+  const lineArr = JSON.parse(window.localStorage.getItem('lines'));
+  lineArr.push(createLineNode(newLineName, upDirEnd, downDirEnd));
+  window.localStorage.setItem('lines', JSON.stringify(lineArr)); 
+}
+
+function checkIfInputLineNameIsValid(inputText) {
+  if (inputText == null || inputText == '') {
+    alert('노선 이름을 입력해주세요');
+    return false;
+  } else if (inputText.length <= 1) {
+    alert('올바른 노선 이름을 입력해주세요');
+    return false;
+  } else if (duplicatedLineName(inputText)) {
+    alert('중복되지 않는 노선 이름을 입력해주세요');
+    return false;
+  }
+  return true;
+}
+
+function duplicatedLineName(inputLineName) {
+  const lineArr = JSON.parse(window.localStorage.getItem('lines'));
+  for (let i = 0 ; i < lineArr.length ; i++) {
+    const lineNode = lineArr[i];
+    if (inputLineName == lineNode.lineName)  return true;
+  }
+  return false;
+}
+
+function checkIfSelectOptionsOverlap() {
+  const dropdown1 = document.getElementById(dropdownId1);
+  const dropdown2 = document.getElementById(dropdownId2);
+  if (dropdown1.value == dropdown2.value ) {
+    alert('상행 종점과 하행 종점이 같습니다');
+    return true;
+  } 
+  return [dropdown1.value, dropdown2.value];
 }
