@@ -1,5 +1,5 @@
 import {createLineNode} from "./lineNode.js";
-import { createLineList, createLineListTable } from "./createLineList.js";
+import {rebuildLineList} from "./createLineList.js";
 const dropdownId1 = `stationDropdown1`;
 const dropdownId2 = `stationDropdown2`;
 
@@ -133,16 +133,10 @@ function addLineBtnClickListener() {
   rebuildLineList();
 }
 
-function rebuildLineList() {
-  const docBody = document.body;
-  docBody.removeChild(docBody.lastChild);
-  const lineList = createLineListTable();
-  docBody.appendChild(lineList);
-}
-
 function addNewLineToLocalStorage(newLineName, upDirEnd, downDirEnd) {
   const lineArr = JSON.parse(window.localStorage.getItem('lines'));
-  lineArr.push(createLineNode(newLineName, upDirEnd, downDirEnd));
+  const stationList = [upDirEnd, downDirEnd];
+  lineArr.push(createLineNode(newLineName, upDirEnd, downDirEnd, stationList));
   window.localStorage.setItem('lines', JSON.stringify(lineArr)); 
 }
 

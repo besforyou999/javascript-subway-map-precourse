@@ -15,7 +15,14 @@ function createLineListText() {
   return lineList;
 }
 
-export function createLineListTable() {
+export function rebuildLineList() {
+  const docBody = document.body;
+  docBody.removeChild(docBody.lastChild);
+  const lineList = createLineListTable();
+  docBody.appendChild(lineList);
+}
+
+function createLineListTable() {
   const lineListTable = document.createElement('table');
   lineListTable.id = 'lineListTable';
   lineListTable.style = "border: 1px solid";
@@ -79,12 +86,11 @@ function createRows() {
 
 function createLineRow(lineNode) {
   const tr = document.createElement('tr');
-  tr.id = lineNode.lineName;
   tr.style = "text-align: left; border: 1px solid";
   tr.appendChild(createLineRowTd(lineNode.lineName));
   tr.appendChild(createLineRowTd(lineNode.upDirEnd));
   tr.appendChild(createLineRowTd(lineNode.downDirEnd));
-  tr.appendChild(createDeleteLineBtn());
+  tr.appendChild(createDeleteLineBtn(lineNode.lineName));
   return tr;
 }
 
@@ -101,12 +107,30 @@ function createSpanTextNormal(textString) {
   return span;
 }
 
-function createDeleteLineBtn() {
+function createDeleteLineBtn(id) {
   const td = document.createElement('td');
   td.style = "border: 1px solid";
   const btn = document.createElement('button');
   const btnText = document.createTextNode('삭제');
+  btn.id = id;
+  btn.addEventListener('click', deleteBtnClickListener);
   btn.appendChild(btnText);
   td.appendChild(btn);
   return td;
 }
+
+function deleteBtnClickListener(e) {
+  const lineArr = JSON.parse(window.localStorage.getItem('lines'));
+  let idx = 0;
+  for ( ; idx < lineArr.length ; idx++) {
+    if (lineArr[idx].lineName == e.target.id) {
+      break;
+    }
+  }
+  let confirmResult = confirm('정말로 삭제하시겠습니까?');
+  if (!confirmResult) return;
+  lineArr.splice(idx,1);
+  window.localStorage.setItem('lines', JSON.stringify(lineArr));
+  rebuildLineList();
+}
+

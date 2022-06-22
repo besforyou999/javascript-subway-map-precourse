@@ -1,7 +1,8 @@
-export function createLineNode(lineName, upDirEnd, downDirEnd) {
+export function createLineNode(lineName, upDirEnd, downDirEnd, stationList = []) {
   return {
     lineName : lineName,
     upDirEnd : upDirEnd,
-    downDirEnd : downDirEnd
+    downDirEnd : downDirEnd,
+    stationList : stationList
   };
 }
