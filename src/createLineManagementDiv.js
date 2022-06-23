@@ -146,7 +146,6 @@ function rebuildLineTable(lineName) {
   body.appendChild(lineTable);
 }
 
-
 function createLineTable(lineName) {
   const lineTable = document.createElement('table');
   lineTable.id = 'lineTable';
@@ -204,14 +203,14 @@ function createRows(lineName) {
   const lineArray = JSON.parse(window.localStorage.getItem('lines'));
   for (let i = 0 ; i < lineArray.length ; i++) {
     if (lineArray[i].lineName == lineName) {
-      rows = createRowTrs(lineArray[i].stationList);
+      rows = createRowTrs(lineArray[i].stationList, lineName);
       break;
     }
   }
   return rows;
 }
 
-function createRowTrs(stationList) {
+function createRowTrs(stationList, lineName) {
   let rows = [];
   let idx = 0;
   stationList.forEach(station => {
@@ -219,20 +218,40 @@ function createRowTrs(stationList) {
     tr.style = "text-align: left; border: 1px solid";
     tr.appendChild(createLineRowTd(idx))
     tr.appendChild(createLineRowTd(station))
-    tr.appendChild(createDeleteStaionFromLineBtn(idx));
+    tr.appendChild(createDeleteStaionFromLineBtn(idx, lineName));
     rows.push(tr);
     idx++;
   });
   return rows;
 }
 
-function createDeleteStaionFromLineBtn(idx) {
+function createDeleteStaionFromLineBtn(idx, lineName) {
   const td = document.createElement('td');
   td.style = `border: 1px solid`;
   const btn = document.createElement('button');
   const btnText = document.createTextNode('노선에서 삭제');
-  btn.id = idx;
+  btn.addEventListener('click', 
+    function() { deleteStationClickListener(lineName, idx); });
   btn.append(btnText);
   td.appendChild(btn);
   return td;
 }
+
+function deleteStationClickListener(lineName, idx) {
+  const lineArray = JSON.parse(window.localStorage.getItem('lines'));
+  let lineNode;
+  for (let i = 0 ; i < lineArray.length ; i++) {
+    if (lineArray[i].lineName == lineName) {
+      lineNode = lineArray[i];
+      break;
+    }
+  }
+  if (lineNode.stationList.length <= 2) {
+    alert('더 이상 노선에서 역을 제거할 수 없습니다')
+    return;
+  }
+  lineNode.stationList.splice(idx,1);
+  window.localStorage.setItem('lines', JSON.stringify(lineArray));
+  rebuildLineTable(lineName);
+}
+
