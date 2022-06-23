@@ -17,7 +17,9 @@ function createLineListText() {
 
 export function rebuildLineList() {
   const docBody = document.body;
-  docBody.removeChild(docBody.lastChild);
+  while(docBody.childElementCount > 2) {
+    docBody.removeChild(docBody.lastChild);
+  }
   const lineListText = createLineListText();
   const lineList = createLineListTable();
   docBody.appendChild(lineListText);
@@ -69,7 +71,7 @@ function createTableFirstRowTexts() {
   return texts;
 }
 
-function createSpanTextBold(textString) {
+export function createSpanTextBold(textString) {
   const span = document.createElement('span');
   span.style = "font-weight: bold";
   span.appendChild(document.createTextNode(textString));
