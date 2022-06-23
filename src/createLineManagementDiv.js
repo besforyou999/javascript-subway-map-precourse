@@ -1,17 +1,15 @@
 const dropdownId = 'dropdown';
-import { createLineRowTd} from "./createLineList.js";
+import { createLineRowTd, rebuildLineList } from "./createLineList.js";
 
 export function createLineManagementDiv(e) {
   deleteExistingManagementPanel();
   const body = document.body;
-  const manageContainer = document.createElement('div');
   const lineManageText = createLineManageText(e.target.id);
-  const registerInterval = createRegisterInterval();
+  const registerInterval = createRegisterInterval(e.target.id);
   const lineTable = createLineTable(e.target.id);
-  manageContainer.appendChild(lineManageText);
-  manageContainer.appendChild(registerInterval);
-  manageContainer.appendChild(lineTable);
-  body.appendChild(manageContainer);
+  body.appendChild(lineManageText);
+  body.appendChild(registerInterval);
+  body.appendChild(lineTable);
 }
 
 function createLineManageText(lineName) {
@@ -35,20 +33,20 @@ function deleteExistingManagementPanel() {
   }
 }
 
-function createRegisterInterval() {
+function createRegisterInterval(lineName) {
   const container = document.createElement('div');
   const registerIntervalText = createRegisterIntervalText();
-  const dropdownInputRegisterDiv = createDropdownInputRegisterDiv();
+  const dropdownInputRegisterDiv = createDropdownInputRegisterDiv(lineName);
   container.appendChild(registerIntervalText);
   container.appendChild(dropdownInputRegisterDiv);
   return container;
 }
 
-function createDropdownInputRegisterDiv() {
+function createDropdownInputRegisterDiv(lineName) {
   const container = document.createElement('div');
   const dropdown = createDropdown();
   const input = createInput();
-  const registerBtn = createRegisterBtn();
+  const registerBtn = createRegisterBtn(lineName);
   container.appendChild(dropdown);
   container.appendChild(input);
   container.appendChild(registerBtn);
@@ -78,12 +76,76 @@ function createInput() {
   return input;
 }
 
-function createRegisterBtn() {
+function createRegisterBtn(lineName) {
   const button = document.createElement('button');
   const textNode = document.createTextNode('등록');
+  button.id = lineName;
   button.appendChild(textNode);
+  button.addEventListener('click', registerBtnClickListener);
   return button;
 }
+
+function registerBtnClickListener(e) {
+  const lineArr = JSON.parse(window.localStorage.getItem('lines'));
+  let stationList, idx;
+  for (let i = 0 ; i < lineArr.length ; i++) {
+    if (lineArr[i].lineName == e.target.id) {
+      stationList = lineArr[i].stationList;
+      idx = i;
+      break;
+    }
+  }
+  const dropdown = document.getElementById(dropdownId);
+  const input = document.getElementById('order');
+  if (isInputValid(input.value, stationList) == false) return;
+  addNewStationToLine(dropdown.value, Number(input.value), stationList, lineArr, idx);
+  rebuildLineTable(e.target.id);
+}
+
+function addNewStationToLine(stationName, index, stationList, lineArr, idx) {
+  const len = stationList.length;
+  if (index < len) {
+    stationList.splice(index, 0, stationName);
+  } else {
+    stationList.push(stationName);
+  }
+  lineArr[idx].stationList = stationList;
+  window.localStorage.setItem('lines', JSON.stringify(lineArr));
+}
+
+function isInputValid(input, stationList) {
+  if (!isPositiveInteger(input)) {
+    alert('0 이상의 정수를 입력해주세요');
+    return false;
+  } else if (!inProperRange(input, stationList)) {
+    alert('알맞은 범위의 정수를 입력해주세요');
+    return false;
+  }
+  return true;
+}
+
+function isPositiveInteger(str) {
+  if (typeof str != 'string') return false;
+  const num = Number(str);
+  if(Number.isInteger(num) && num >= 0) return true;
+  return false;
+}
+
+function inProperRange(input, stationList) {
+  let len = stationList.length;
+  if (Number(input) >= 0 && Number(input) <= len) return true;
+  return false;
+}
+
+function rebuildLineTable(lineName) {
+  const body = document.body;
+  while(body.childElementCount > 4) {
+    body.removeChild(body.lastChild);
+  }
+  const lineTable = createLineTable(lineName);
+  body.appendChild(lineTable);
+}
+
 
 function createLineTable(lineName) {
   const lineTable = document.createElement('table');
