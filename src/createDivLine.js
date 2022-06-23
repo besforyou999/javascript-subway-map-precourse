@@ -3,7 +3,7 @@ import {createLineList} from "./createLineList.js";
 
 export function createDivLine() {
   const top = document.body;
-  while(top.childElementCount > 1) {``
+  while(top.childElementCount > 1) {
     top.removeChild(top.lastChild);
   }
 

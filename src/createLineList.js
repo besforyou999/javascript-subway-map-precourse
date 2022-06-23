@@ -18,7 +18,9 @@ function createLineListText() {
 export function rebuildLineList() {
   const docBody = document.body;
   docBody.removeChild(docBody.lastChild);
+  const lineListText = createLineListText();
   const lineList = createLineListTable();
+  docBody.appendChild(lineListText);
   docBody.appendChild(lineList);
 }
 
@@ -94,14 +96,14 @@ function createLineRow(lineNode) {
   return tr;
 }
 
-function createLineRowTd(textString) {
+export function createLineRowTd(textString) {
   const td = document.createElement('td');
   td.style = "border: 1px solid; padding: 5px";
   td.appendChild(createSpanTextNormal(textString));
   return td;
 }
 
-function createSpanTextNormal(textString) {
+export function createSpanTextNormal(textString) {
   const span = document.createElement('span');
   span.appendChild(document.createTextNode(textString));
   return span;
